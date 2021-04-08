@@ -1,13 +1,13 @@
 {
   "name": "nodejs-homework",
   "version": "1.0.0",
-  "description": "course Nodejs",
+  "description": "course Node.js",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint **/*.{js,json}",
-    "lint:fix": "eslint --fix **/*.{js,json}",
-    "start": "cross-env NODE_ENV=production node src/app.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon src/app.js",
+    "lint": "eslint **/*.js",
+    "lint:fix": "eslint --fix **/*.js",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js",
     "test": "echo Error: no test specified && exit 1"
   },
   "repository": {
@@ -26,15 +26,18 @@
   },
   "homepage": "https://github.com/IgorMazur78/nodejs-homework#readme",
   "dependencies": {
+    "@tepez/joi-phone-number-extensions": "^0.2.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^17.4.0",
+    "joi-phone-number-extensions": "^1.1.0",
+    "lowdb": "^1.0.0",
     "morgan": "^1.10.0",
     "uuid": "^8.3.2"
   },
-    "devDependencies": {
+  "devDependencies": {
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-config-standard": "^16.0.2",
@@ -52,11 +55,13 @@
       "data/*.*"
     ]
   },
-  "husky":{
-    "pre-commit":"lint-staged"
+  "husky": {
+    "pre-commit": "lint-staged"
   },
-  "lint-staged":{
-    "**/*.{js,json}":["npm run lint:fix","git add ."]
+  "lint-staged": {
+    "**/*.{js,json}": [
+      "npm run lint:fix",
+      "git add ."
+    ]
   }
 }
-
