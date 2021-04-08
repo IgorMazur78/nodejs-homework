@@ -1,13 +1,13 @@
 {
   "name": "nodejs-homework",
   "version": "1.0.0",
-  "description": "course Nodejs",
+  "description": "course Node.js",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint **/*.{js,json}",
-    "lint:fix": "eslint --fix **/*.{js,json}",
-    "start": "cross-env NODE_ENV=production node src/app.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon src/app.js",
+    "lint": "eslint **/*.js",
+    "lint:fix": "eslint --fix **/*.js",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js",
     "test": "echo Error: no test specified && exit 1"
   },
   "repository": {
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/IgorMazur78/nodejs-homework#readme",
   "dependencies": {
+    "@tepez/joi-phone-number-extensions": "^0.2.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
