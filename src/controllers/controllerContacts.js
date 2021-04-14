@@ -2,9 +2,9 @@ const { HttpCode } = require("../helpers/constants");
 const { Service } = require("../service");
 const serviceContacts = new Service();
 
-const getAll = (req, res, next) => {
+const getAll = async (req, res, next) => {
   try {
-    const contacts = serviceContacts.getAllContacts();
+    const contacts = await serviceContacts.getAllContacts();
     return res.status(HttpCode.OK).json({
       status: "succes",
       code: HttpCode.OK,
@@ -16,9 +16,9 @@ const getAll = (req, res, next) => {
     next(err);
   }
 };
-const getById = (req, res, next) => {
+const getById = async (req, res, next) => {
   try {
-    const contact = serviceContacts.getContactsById(req.params);
+    const contact = await serviceContacts.getContactsById(req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: "success",
@@ -38,9 +38,9 @@ const getById = (req, res, next) => {
     next(err);
   }
 };
-const create = (req, res, next) => {
+const create = async (req, res, next) => {
   try {
-    const contact = serviceContacts.createContact(req.body);
+    const contact = await serviceContacts.createContact(req.body);
     return res.status(HttpCode.CREATED).json({
       status: "success",
       code: HttpCode.CREATED,
@@ -53,9 +53,9 @@ const create = (req, res, next) => {
     next(e);
   }
 };
-const update = (req, res, next) => {
+const update = async (req, res, next) => {
   try {
-    const contact = serviceContacts.updateContact(req.params, req.body);
+    const contact = await serviceContacts.updateContact(req.params, req.body);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: "success",

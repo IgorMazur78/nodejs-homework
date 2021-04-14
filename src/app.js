@@ -31,8 +31,6 @@ app.use((err,req,res,next) => {
     next()
 }
 )
-const PORT = process.env.PORT || 3030
-app.listen(PORT, () => {
-    console.log(`server running.example app listen on ${PORT}`)  })
+module.exports = app;
 
 

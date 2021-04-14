@@ -1,22 +1,24 @@
 const Joi = require("joi");
-// const JoiPhoneNumber = require("joi-phone-number-extensions")
 const { HttpCode } = require("../helpers/constants");
-// const Joi = BaseJoi.extend(JoiPhoneNumber);
+
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(33).required(),
-  phone: Joi.number().required(),
+    phone: Joi.number().required(),
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
+  shopCustomer: Joi.boolean().optional(),
 });
 const schemaUpdateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(33).optional(),
-  phone: Joi.number().required(),
-  // phone: Joi.phoneNumber().defaultRegion("UA").type("MOBILE").format('E164').required(),
-  email: Joi.string()
+  phone: Joi.number().optional(),
+    email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .optional(),
+});
+const schemaUpdateStatusContact = Joi.object({
+  shopCustomer: Joi.boolean().required(),
 });
 
 const validate = (schema, body, next) => {
@@ -40,4 +42,7 @@ module.exports.validateSchemaCreateContact = (req, res, next) => {
 
 module.exports.validateSchemaUpdateContact = (req, res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+module.exports.validateSchemaUpdateStatusContact = (req, res, next) => {
+  return validate(schemaUpdateStatusContact, req.body, next);
 };
