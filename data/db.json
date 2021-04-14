@@ -1,28 +1,37 @@
-{
-  "contacts": [
-    {
-      "id": "94351629-2f38-40c6-b8f5-68fe757d80d7",
-      "name": "Ihor",
-      "email": "ihor@gmail.com",
-      "phone": "050 7895644"
-    },
-    {
-      "id": "5a1f1c2c-e331-4ae3-a593-9b46b02d99c7",
-      "name": "Vlad",
-      "email": "Vlad@gmail.com",
-      "phone": "050 7895633"
-    },
-    {
-      "id": "1cbeff56-7a85-47f2-beb2-165bba42d7b7",
-      "name": "Artem",
-      "phone": "7896756",
-      "email": "artem@gmail.com"
-    },
-    {
-      "id": "b3fd0c54-a22b-4459-9dde-a37761068048",
-      "name": "Ira",
-      "phone": "7896768",
-      "email": "ira@gmail.com"
-    }
-  ]
-}
+[{
+ 
+  "name": "Ihor",
+  "email": "ihor@gmail.com",
+  "phone": "050 7895644",
+  "shopCustomer": true
+},{
+ 
+  "name": "Vlad",
+  "email": "Vlad@gmail.com",
+  "phone": "050 7895633",
+  "shopCustomer": true
+},{
+  
+  "name": "Artem",
+  "phone": "7896756",
+  "email": "artem@gmail.com",
+  "shopCustomer": false
+},{
+  
+  "name": "Ira",
+  "phone": "7896768",
+  "email": "ira@gmail.com",
+  "shopCustomer": false
+},{
+  
+  "name": "VIKA",
+  "phone": "7896799",
+  "email": "vika@gmail.com",
+  "shopCustomer": true
+},{
+  
+  "name": "Dasha",
+  "phone": "7896799",
+  "email": "Dasha@gmail.com",
+  "shopCustomer": false
+}]
