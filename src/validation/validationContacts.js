@@ -1,24 +1,40 @@
 const Joi = require("joi");
 const { HttpCode } = require("../helpers/constants");
 
-
 const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(33).required(),
-    phone: Joi.number().required(),
+  phone: Joi.string().alphanum().min(2).max(20).required(),
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
   shopCustomer: Joi.boolean().optional(),
+  owner:Joi.string()
 });
 const schemaUpdateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(33).optional(),
-  phone: Joi.number().optional(),
-    email: Joi.string()
+  phone: Joi.string().alphanum().min(2).max(20).optional(),
+  email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .optional(),
-});
+}).or("name", "phone", "email");
+
 const schemaUpdateStatusContact = Joi.object({
   shopCustomer: Joi.boolean().required(),
+});
+
+const schemaCreateUser = Joi.object({
+  name: Joi.string().alphanum().min(2).max(33).required(),
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .required(),
+  password: Joi.string().required(),
+  subscription: Joi.string().optional(),
+});
+const schemaLoginUser = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .required(),
+  password: Joi.string().required(),
 });
 
 const validate = (schema, body, next) => {
@@ -45,4 +61,10 @@ module.exports.validateSchemaUpdateContact = (req, res, next) => {
 };
 module.exports.validateSchemaUpdateStatusContact = (req, res, next) => {
   return validate(schemaUpdateStatusContact, req.body, next);
+};
+module.exports.validateschemaCreateUser = (req, res, next) => {
+  return validate(schemaCreateUser, req.body, next);
+};
+module.exports.validatesschemaLoginUser = (req, res, next) => {
+  return validate(schemaLoginUser, req.body, next);
 };

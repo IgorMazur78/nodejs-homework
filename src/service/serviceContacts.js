@@ -1,5 +1,5 @@
 const { RepositoryContacts } = require("../repository");
-const db =require("../db/db");
+
 
 class Service {
   constructor() {
@@ -12,28 +12,28 @@ class Service {
     
   }
 
-  async getAllContacts() {
-    const allContacts = await this.repositories.contacts.getAllContacts();
+  async getAllContacts(query) {
+    const allContacts = await this.repositories.contacts.getAllContacts(query);
     return allContacts;
   }
 
-  async getContactsById({ id }) {
-    const contactById = await this.repositories.contacts.getById(id);
+  async getContactsById({ id, userId }) {
+    const contactById = await this.repositories.contacts.getById(id, userId);
     return contactById;
   }
-
-  async createContact(body) {
-    const newContact = await this.repositories.contacts.createContact(body);
+  
+  async createContact(body,userId) {
+    const newContact = await this.repositories.contacts.createContact(body,userId);
     return newContact;
   }
 
-  async updateContact({ id }, body) {
-    const update = await this.repositories.contacts.updateContact(id, body);
+  async updateContact({ id }, body, userId) {
+    const update = await this.repositories.contacts.updateContact(id, body, userId);
     return update;
   }
 
-  async removeContact({ id }) {
-    const deleteContact = await this.repositories.contacts.removeContact(id);
+  async removeContact({ id , userId}) {
+    const deleteContact = await this.repositories.contacts.removeContact(id, userId);
     return deleteContact;
   }
 }
