@@ -4,21 +4,24 @@ const serviceContacts = new Service();
 
 const getAll = async (req, res, next) => {
   try {
-    const contacts = await serviceContacts.getAllContacts();
+    const userId = req.user.id;
+    const contacts = await serviceContacts.getAllContacts(req.query, userId);
     return res.status(HttpCode.OK).json({
       status: "succes",
       code: HttpCode.OK,
       data: {
-        contacts,
+        ...contacts,
       },
     });
   } catch (err) {
     next(err);
   }
 };
+
 const getById = async (req, res, next) => {
   try {
-    const contact = await serviceContacts.getContactsById(req.params);
+    const userId = req.user?.id;
+    const contact = await serviceContacts.getContactsById(req.params, userId);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: "success",
@@ -40,8 +43,12 @@ const getById = async (req, res, next) => {
 };
 const create = async (req, res, next) => {
   try {
-    const contact = await serviceContacts.createContact(req.body);
+    const userId = req.user?.id;
+              
+    const contact = await serviceContacts.createContact(req.body,userId);
+
     return res.status(HttpCode.CREATED).json({
+    
       status: "success",
       code: HttpCode.CREATED,
       message: "Contact Created",
@@ -55,7 +62,14 @@ const create = async (req, res, next) => {
 };
 const update = async (req, res, next) => {
   try {
-    const contact = await serviceContacts.updateContact(req.params, req.body);
+    const userId = req.user?.id;
+     
+    const contact = await serviceContacts.updateContact(
+      userId,
+      req.params,
+      req.body
+    );
+
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: "success",
@@ -77,8 +91,13 @@ const update = async (req, res, next) => {
 };
 const remove = (req, res, next) => {
   try {
-    const contact = serviceContacts.removeContact(req.params);
+    const userId = req.user?.id;
+    
+    const contact = serviceContacts.removeContact(userId, req.params);
+    
+      
     if (contact) {
+    
       return res.status(HttpCode.OK).json({
         status: "success",
         code: HttpCode.OK,

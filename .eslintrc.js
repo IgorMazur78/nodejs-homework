@@ -12,6 +12,6 @@ module.exports = {
   },
   rules: {
     'comma-dangle': 'off',
-    'space-before-function-paren': 'off',
+    'space-before-function-parent': 'off',
   }
 }
