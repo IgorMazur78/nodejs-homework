@@ -1,6 +1,5 @@
 const { ServiceUsers, Auth } = require("../service");
 const { HttpCode } = require("../helpers/constants");
-
 const serviceUser = new ServiceUsers();
 const serviceAuth = new Auth();
 
@@ -41,7 +40,6 @@ const login = async (req, res, next) => {
 
   try {
     const user = await serviceAuth.login(email, password);
-    console.log("🚀 ~ file: userController.js ~ line 44 ~ login ~ user", user)
     const token = user.token;
     const subscription = user.subscription;
     if (token) {
@@ -65,21 +63,59 @@ const login = async (req, res, next) => {
     next(e);
   }
 };
+
+const getCurrentUser = async (req, res, next) => {
+  const { name, email, subscription } = req.user;
+
+  try {
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      message: `Authorization was successful: ${name}`,
+      data: {
+        "user name": name,
+        email: email,
+        subscription: subscription,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const userUpdateStatus = async (req, res, next) => {
+  const { id } = req.user;
+  const body = req.body;
+  console.log("🚀 ~ file: userController.js ~ line 89 ~ userUpdateStatus ~ body", body)
+
+  try {
+    
+    const result = await serviceUser.findUserAndUpdateStatus(id, body);
+       res.status(HttpCode.OK).json({
+      status: "success",
+      message: "status update",
+    });
+    return result
+    
+  } catch (error) {
+    next(error);
+  }
+};
+
 const logout = async (req, res, next) => {
   const id = req.body;
   try {
     const user = await serviceUser.findUserById(id);
     const token = user.token;
-    const userId = user.id;
+    const userid = user._id;
     if (!token) {
       res.status(HttpCode.UNAUTHORIZED).json({
         message: "UNAUTHORIZED",
       });
-     
     }
-    await serviceAuth.logout(userId)
+    await serviceAuth.logout(userid);
     res.status(HttpCode.OK).json({
-      status:"success",
+      status: "success",
       message: "User logged out",
     });
   } catch (error) {
@@ -90,5 +126,7 @@ const logout = async (req, res, next) => {
 module.exports = {
   regisration,
   login,
+  getCurrentUser,
+  userUpdateStatus,
   logout,
 };

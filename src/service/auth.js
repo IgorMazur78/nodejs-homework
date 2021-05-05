@@ -12,16 +12,20 @@ class Auth {
 
   async login(email, password) {
     const user = await this.repositories.authUser.findUserByEmail(email);
-    const validPassword = await user.validPassword(password)
-      if (!user || !validPassword) {
+
+    const validPassword = await user.validPassword(password);
+    if (!user || !validPassword) {
       return null;
     }
     const userid = user.id;
+    
     const payload = { userid };
 
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
-    await this.repositories.authUser.updateToken(userid, token);
-    return user;
+
+    const newUser = await this.repositories.authUser.updateToken(userid, token);
+    
+    return newUser;
   }
 
   async logout(id) {

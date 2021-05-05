@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { HttpCode } = require("../helpers/constants");
+const { HttpCode, Subscription } = require("../helpers/constants");
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(33).required(),
@@ -36,6 +36,10 @@ const schemaLoginUser = Joi.object({
     .required(),
   password: Joi.string().required(),
 });
+const schemaUpdateStatusUser = Joi.object({
+  subscription: Joi.any().valid(Subscription.START, Subscription.PROFESSIONAL, Subscription.BUISNESS),
+});
+
 
 const validate = (schema, body, next) => {
   const { error } = schema.validate(body);
@@ -53,7 +57,10 @@ const validate = (schema, body, next) => {
   next();
 };
 module.exports.validateSchemaCreateContact = (req, res, next) => {
-  return validate(schemaCreateContact, req.body, next);
+const result = validate(schemaCreateContact, req.body, next);
+
+  return result
+  
 };
 
 module.exports.validateSchemaUpdateContact = (req, res, next) => {
@@ -64,6 +71,9 @@ module.exports.validateSchemaUpdateStatusContact = (req, res, next) => {
 };
 module.exports.validateschemaCreateUser = (req, res, next) => {
   return validate(schemaCreateUser, req.body, next);
+};
+module.exports.validatesSchemaUpdateStatusUser = (req, res, next) => {
+  return validate(schemaUpdateStatusUser, req.body, next);
 };
 module.exports.validatesschemaLoginUser = (req, res, next) => {
   return validate(schemaLoginUser, req.body, next);

@@ -2,7 +2,6 @@ const Contact = require("../schema/schemaContact");
 
 class RepositoryContacts {
   constructor() {
-    // this.collection = client.db().collection("contacts");
     this.modelContact = Contact;
   }
 
@@ -26,29 +25,36 @@ class RepositoryContacts {
     return { contacts, total, limit: Number(limit), offset: Number(offset) };
   }
 
-  async getById(id, userId) {
-    const result = await this.modelContact.findOne({ _id: id, owner: userId });
+  async getById(userid, id) {
+    const result = await this.modelContact.findOne({ _id: id, owner: userid });
     return result;
   }
 
-  async createContact(body, userId) {
-    const newContact = await this.modelContact.create({...body, owner:userId});
+  async createContact(userid, body) {
+    const newContact = await this.modelContact.create({
+      ...body,
+      owner: userid,
+    });
     return newContact;
   }
 
-  async updateContact(id, body, userId) {
+  async updateContact(userid, id, body) {
+      
     const result = await this.modelContact.findByIdAndUpdate(
-      { _id: id, owner: userId },
+      { _id: id, owner: userid },
       { ...body },
       { new: true }
     );
     return result;
   }
 
-  async removeContact(id, userId) {
-    const result = await this.modelContact.findByIdAndRemove({
+  async removeContact(userid, id) {
+  console.log("🚀 ~ file: repositoryContacts.js ~ line 52 ~ RepositoryContacts ~ removeContact ~ userid", userid)
+  
+ 
+       const result = await this.modelContact.findByIdAndRemove({
       _id: id,
-      owner: userId,
+      owner: userid,
     });
     return result;
   }

@@ -9,15 +9,17 @@ const {
 } = require("../../validation/validationContacts");
 
 router
-  .get("/", guard, controllerContacts.getAll)
-  .get("/:id", guard, controllerContacts.getById)
+  .get("/", controllerContacts.getAll)
+  .get("/:id", controllerContacts.getById)
   .post(
     "/",
     guard,
     validateSchemaCreateContact,
     controllerContacts.create
   )
-  .put("/:id", guard, validateSchemaUpdateContact, controllerContacts.update)
+  .put("/:id", guard, 
+  validateSchemaUpdateContact, 
+  controllerContacts.update)
   .patch(
     "/:id/customer",
     guard,

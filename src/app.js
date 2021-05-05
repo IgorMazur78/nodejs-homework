@@ -23,8 +23,11 @@ app.use((req,res,next) => {
     next()
 })
 app.use((err,req,res,next) => {
+    console.log(err);
+    
     err.status = err.status ? err.status : HttpCode.INTERNAL_SERVER_ERROR
     res.status(err.status).json({
+        
         status: err.status === 500 ? "fail" : "ERROR",
         code:err.status,
         message:err.message,

@@ -17,8 +17,17 @@ class ServiceUsers {
     return data;
   }
 
+  async findUserAndUpdateStatus (useid, body) {
+    const newSatusUser = await this.repositories.serviceUser.updateStatus(useid,body);
+    return newSatusUser
+
+  }
+
   async findUserById(id) {
+    
     const data = await this.repositories.serviceUser.findUserbyId(id);
+    
+    
     return data;
   }
 }

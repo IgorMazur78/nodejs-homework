@@ -12,28 +12,29 @@ class Service {
     
   }
 
-  async getAllContacts(query) {
-    const allContacts = await this.repositories.contacts.getAllContacts(query);
+  async getAllContacts(query,userid) {
+    const allContacts = await this.repositories.contacts.getAllContacts(userid,query);
     return allContacts;
   }
 
-  async getContactsById({ id, userId }) {
-    const contactById = await this.repositories.contacts.getById(id, userId);
+  async getContactsById({ id}, userid ) {
+    const contactById = await this.repositories.contacts.getById(userid, id);
     return contactById;
   }
   
-  async createContact(body,userId) {
-    const newContact = await this.repositories.contacts.createContact(body,userId);
+  async createContact( body, userid) {
+
+    const newContact = await this.repositories.contacts.createContact(userid, body);
     return newContact;
   }
 
-  async updateContact({ id }, body, userId) {
-    const update = await this.repositories.contacts.updateContact(id, body, userId);
+  async updateContact(userid, { id }, body ) {
+    const update = await this.repositories.contacts.updateContact(userid,id, body );
     return update;
   }
 
-  async removeContact({ id , userId}) {
-    const deleteContact = await this.repositories.contacts.removeContact(id, userId);
+  async removeContact(userid, { id }) {
+    const deleteContact = await this.repositories.contacts.removeContact(userid, id, );
     return deleteContact;
   }
 }

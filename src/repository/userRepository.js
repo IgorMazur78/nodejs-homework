@@ -6,8 +6,8 @@ class UserRepository {
   }
   
   async findUserbyId (id) {
-    const result = await this.model.findOne({ _id:id })
-   
+        const result = await this.model.findOne({ _id: id} )
+      
     return result;
   }
   
@@ -16,14 +16,23 @@ class UserRepository {
     return result;
   }
 
-  async createUser(body, useId) {
+  async createUser(body, userId) {
     // eslint-disable-next-line new-cap
-    const user = new this.model({...body, owner: useId});
+    const user = new this.model({...body, owner: userId});
     return user.save();
   }
 
+  async updateStatus(id,subscription){
+    const newUserStatus = await this.model.findByIdAndUpdate( id , {... subscription },{ new:true});
+    
+    return newUserStatus
+  }
+
   async updateToken(id, token) {
-    await this.model.updateOne({ _id: id }, { token });
+    const newUserToken = await this.model.findByIdAndUpdate(id, { token },{ new: true});
+    
+    return newUserToken
+
   }
 }
 module.exports = UserRepository;
