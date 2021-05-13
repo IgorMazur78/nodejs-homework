@@ -1,10 +1,27 @@
+const Jimp = require("jimp");
+const fs = require("fs").promises;
+const path = require("path");
+
+const cloudinary = require("cloudinary").v2
+const {promisify} =require("util")
+
 const { ServiceUsers, Auth } = require("../service");
 const { HttpCode } = require("../helpers/constants");
+require("dotenv").config();
+
+// const { fchmod } = require("fs");
 const serviceUser = new ServiceUsers();
 const serviceAuth = new Auth();
 
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY_CLOUD, 
+  api_secret: process.env.API_SECRET 
+});
+const uploadCloudy = promisify(cloudinary.uploader.upload)
 const regisration = async (req, res, next) => {
-  const { name, email, password, subscription } = req.body;
+  console.log("type FOLDERS_AVATARS:", typeof FOLDERS_AVATARS);
+  const { name, email, password, subscription, avatar } = req.body;
   const user = await serviceUser.findUserByEmail(email);
   if (user) {
     return next({
@@ -19,6 +36,7 @@ const regisration = async (req, res, next) => {
       email,
       password,
       subscription,
+      avatar,
     });
     return res.status(HttpCode.CREATED).json({
       status: "success",
@@ -28,6 +46,7 @@ const regisration = async (req, res, next) => {
         name: newUser.name,
         email: newUser.email,
         subscription: newUser.subscription,
+        avatar: newUser.avatar,
       },
     });
   } catch (e) {
@@ -66,7 +85,7 @@ const login = async (req, res, next) => {
 
 const getCurrentUser = async (req, res, next) => {
   const { name, email, subscription } = req.user;
-
+  
   try {
     return res.status(HttpCode.OK).json({
       status: "success",
@@ -86,17 +105,14 @@ const getCurrentUser = async (req, res, next) => {
 const userUpdateStatus = async (req, res, next) => {
   const { id } = req.user;
   const body = req.body;
-  console.log("🚀 ~ file: userController.js ~ line 89 ~ userUpdateStatus ~ body", body)
 
   try {
-    
     const result = await serviceUser.findUserAndUpdateStatus(id, body);
-       res.status(HttpCode.OK).json({
+    res.status(HttpCode.OK).json({
       status: "success",
       message: "status update",
     });
-    return result
-    
+    return result;
   } catch (error) {
     next(error);
   }
@@ -123,10 +139,72 @@ const logout = async (req, res, next) => {
   }
 };
 
+const updateAvatar = async (req, res, next) => {
+
+  try {
+    // console.log("2 type FOLDERS_AVATARS:", typeof FOLDERS_AVATARS);
+    const { id } = req.user;
+    
+    // const avatarUrl = await saveAvatar(req);
+    const { idCloudAvatar, avatarUrl } = await saveAvatarCloud(req);
+    
+    await serviceUser.updateAvatar(id, avatarUrl, idCloudAvatar);
+    return res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      message: "Avatar user update",
+      data: { avatarUrl },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// const saveAvatar = async (req) => {
+
+//   const FOLDERS_AVATARS = process.env.FOLDERS_AVATARS;
+//     const pathFile = req.file.path;
+//   const newNameAvatar = `${Date.now().toString()}-${req.file.originalname}`;
+
+//   const img = await Jimp.read(pathFile);
+
+//   await img
+//     .autocrop()
+//     .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE)
+//     .writeAsync(pathFile);
+
+//   await fs.rename(
+//     pathFile,
+//     path.join(process.cwd(), "public", FOLDERS_AVATARS, newNameAvatar)
+//   );
+//   const oldAvatar = req.user.avatar;
+//   if(req.user.avatar.includes(`${FOLDERS_AVATARS}/`)){
+    
+//     await fs.unlink(path.join(process.cwd(), "public", oldAvatar))
+//   }
+
+//   return path.join(FOLDERS_AVATARS, newNameAvatar);
+// };
+
+const saveAvatarCloud = async (req) => {
+  const pathFile = req.file.path;
+    const { public_id: idCloudAvatar ,secure_url: avatarUrl} = await uploadCloudy(pathFile,{
+    public_id:req.user.idCloudAvatar?.replace("Avatars/",""),
+    folder:"Avatars",
+    transformation:{width: 250, height: 250, crop: "pad"}
+    
+  })
+  
+  await fs.unlink(pathFile);
+
+  return { idCloudAvatar, avatarUrl }
+}
+
 module.exports = {
   regisration,
   login,
   getCurrentUser,
   userUpdateStatus,
+  updateAvatar,
   logout,
 };

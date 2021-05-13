@@ -11,9 +11,11 @@ const params = {
 };
 passport.use(
   new Strategy(params, async (payload, done) => {
+    
     try {
       const service = new ServiceUsers();
       const user = await service.findUserById(payload.userid);
+      
 
       if (!user) {
         return done(new Error("Not Found"));
