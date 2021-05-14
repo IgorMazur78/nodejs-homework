@@ -1,7 +1,9 @@
 const express = require("express");
 const userController = require("../../controllers/userController");
+require("dotenv").config();
 const router = express.Router();
-const guard = require("../../helpers/guard")
+const guard = require("../../helpers/guard");
+const uploadAvatar = require("../../helpers/uploadAvatar")
 const {
   validatesSchemaUpdateStatusUser,
    validateschemaCreateUser, validatesschemaLoginUser
@@ -13,5 +15,6 @@ router
 .post("/login", validatesschemaLoginUser,userController.login)
 .post("/logout", guard, userController.logout)
 .patch("/current",guard, validatesSchemaUpdateStatusUser,userController.userUpdateStatus)
+.patch("/avatar",guard, uploadAvatar.single("avatar"), userController.updateAvatar)
 
 module.exports = router;

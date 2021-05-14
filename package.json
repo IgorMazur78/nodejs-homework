@@ -8,7 +8,8 @@
     "lint:fix": "eslint --fix **/*.js",
     "start": "node src/index.js",
     "start:dev": "nodemon src/index.js",
-    "test": "echo Error: no test specified && exit 1"
+    "test": "jest --no-cache --verbose --detectOpenHandles",
+    "test:coverage": "jest --coverage --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -28,24 +29,31 @@
   "dependencies": {
     "@tepez/joi-phone-number-extensions": "^0.2.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.25.1",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
+    "eslint-plugin-jest": "^24.3.6",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "gravatar": "1.8.1",
+    "jest": "^26.6.3",
+    "jimp": "0.16.1",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.7",
     "mongoose-paginate-v2": "^1.3.17",
     "morgan": "^1.10.0",
+    "multer": "1.4.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "supertest": "^6.1.3"
   },
   "devDependencies": {
-    "eslint": "^7.23.0",
+    "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",

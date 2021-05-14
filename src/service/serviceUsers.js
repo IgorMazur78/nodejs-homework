@@ -30,5 +30,11 @@ class ServiceUsers {
     
     return data;
   }
+
+  async updateAvatar(id, avatar, idCloudAvatar){
+
+    const data = await this.repositories.serviceUser.updateAvatar(id,avatar, idCloudAvatar)
+    return data
+  }
 }
 module.exports = ServiceUsers;

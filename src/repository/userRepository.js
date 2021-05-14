@@ -34,5 +34,12 @@ class UserRepository {
     return newUserToken
 
   }
+
+  async updateAvatar(id, avatar, idCloudAvatar ) {
+    const newUserAvatar = await this.model.findByIdAndUpdate(id, { avatar, idCloudAvatar }, { new: true});
+    
+    return newUserAvatar
+
+  }
 }
 module.exports = UserRepository;
