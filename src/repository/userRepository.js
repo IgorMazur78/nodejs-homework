@@ -15,6 +15,11 @@ class UserRepository {
     const result = await this.model.findOne({ email });
     return result;
   }
+  
+  async findUserByToken(token) {
+    const result = await this.model.findOne({ verifyTokenEmail:token });
+    return result;
+  }
 
   async createUser(body, userId) {
     // eslint-disable-next-line new-cap
@@ -32,6 +37,12 @@ class UserRepository {
     const newUserToken = await this.model.findByIdAndUpdate(id, { token },{ new: true});
     
     return newUserToken
+
+  }
+
+  async updateVerifyToken(id, verify, verifyToken) {
+    const verifyUserToken = await this.model.findByIdAndUpdate(id, { verify ,verifyTokenEmail:verifyToken},{ new: true});
+    return verifyUserToken
 
   }
 

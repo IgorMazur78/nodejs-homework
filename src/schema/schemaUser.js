@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { Schema } = mongoose;
 const { Subscription } = require("../helpers/constants");
-const gravatar = require('gravatar')
+const gravatar = require('gravatar');
+const { nanoid } = require("nanoid");
 
 const SALT_FACTOR = 6;
 const blogSchemaUser = new Schema(
@@ -49,6 +50,16 @@ const blogSchemaUser = new Schema(
         type:String,
         default:null
       }
+
+    }, 
+    verify:{
+      type:Boolean,
+      default:false
+    },
+    verifyTokenEmail:{
+type:String,
+required:true,
+default:nanoid()
 
     }
   },

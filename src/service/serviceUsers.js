@@ -16,6 +16,19 @@ class ServiceUsers {
     const data = await this.repositories.serviceUser.findUserByEmail(email);
     return data;
   }
+  
+  async findUserByToken(token) {
+    const data = await this.repositories.serviceUser.findUserByToken(token);
+    return data;
+  }
+  
+ 
+
+  async updateVerifyToken(id, verify, verifyToken) {
+    const data = await this.repositories.serviceUser.updateVerifyToken (id,verify, verifyToken);
+    return data;
+  }
+
 
   async findUserAndUpdateStatus (useid, body) {
     const newSatusUser = await this.repositories.serviceUser.updateStatus(useid,body);
@@ -36,5 +49,6 @@ class ServiceUsers {
     const data = await this.repositories.serviceUser.updateAvatar(id,avatar, idCloudAvatar)
     return data
   }
+
 }
 module.exports = ServiceUsers;

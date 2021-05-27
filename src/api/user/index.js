@@ -8,10 +8,13 @@ const {
   validatesSchemaUpdateStatusUser,
    validateschemaCreateUser, validatesschemaLoginUser
   } = require("../../validation/validationContacts");
+  
 
 router
 .get("/current",guard,userController.getCurrentUser )
-.post("/signup", validateschemaCreateUser,userController.regisration)
+.get("/verify/:token", userController.verifyToken)
+.post("/verify", userController.verifyTokenEmail )
+.post("/signup",validateschemaCreateUser,userController.regisration)
 .post("/login", validatesschemaLoginUser,userController.login)
 .post("/logout", guard, userController.logout)
 .patch("/current",guard, validatesSchemaUpdateStatusUser,userController.userUpdateStatus)

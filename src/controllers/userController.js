@@ -1,9 +1,12 @@
-const Jimp = require("jimp");
+// const Jimp = require("jimp");
 const fs = require("fs").promises;
-const path = require("path");
+// const path = require("path");
+const mailer = require("../serviceEmail/email")
+const createTemplateEmail = require("../serviceEmail/templateEmail")
 
-const cloudinary = require("cloudinary").v2
-const {promisify} =require("util")
+
+const cloudinary = require("cloudinary").v2;
+const { promisify } = require("util");
 
 const { ServiceUsers, Auth } = require("../service");
 const { HttpCode } = require("../helpers/constants");
@@ -13,15 +16,23 @@ require("dotenv").config();
 const serviceUser = new ServiceUsers();
 const serviceAuth = new Auth();
 
-cloudinary.config({ 
-  cloud_name: process.env.CLOUD_NAME, 
-  api_key: process.env.API_KEY_CLOUD, 
-  api_secret: process.env.API_SECRET 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY_CLOUD,
+  api_secret: process.env.API_SECRET,
 });
-const uploadCloudy = promisify(cloudinary.uploader.upload)
+const uploadCloudy = promisify(cloudinary.uploader.upload);
 const regisration = async (req, res, next) => {
-  console.log("type FOLDERS_AVATARS:", typeof FOLDERS_AVATARS);
-  const { name, email, password, subscription, avatar } = req.body;
+ 
+  const { name, email, password, subscription, avatar, verifyToken } = req.body;
+  const message = {
+  to: email,
+  subject: 'Nodemailer test',
+  // text: 'Привет. Мы тестируем отправку писем!',
+  html: createTemplateEmail(verifyToken, name),
+
+}
+  
   const user = await serviceUser.findUserByEmail(email);
   if (user) {
     return next({
@@ -38,7 +49,8 @@ const regisration = async (req, res, next) => {
       subscription,
       avatar,
     });
-    return res.status(HttpCode.CREATED).json({
+       mailer(message);
+        return res.status(HttpCode.CREATED).json({
       status: "success",
       code: HttpCode.CREATED,
       data: {
@@ -53,6 +65,69 @@ const regisration = async (req, res, next) => {
     next(e);
   }
 };
+const verifyToken = async (req, res, next) => {
+   
+  try {
+    const user = await serviceUser.findUserByToken(req.params.token)
+    
+           if (user) {
+         await serviceUser.updateVerifyToken(user.id, true,null)
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        data: {
+          message: "Verification successfull",
+           },
+        
+      });
+    }
+    next({
+      status: HttpCode.BAD_REQUEST,
+      message: "Token is wrong",
+    })
+    
+  } catch (error) {
+    next(error)
+  }
+}
+
+const verifyTokenEmail = async (req,res,next) => {
+  try {
+
+    const user = await serviceUser.findUserByEmail(req.body.email);
+    if(user){
+      const { email, name, verifyTokenEmail} = user;
+const message = {
+  to: email,
+  subject: 'Nodemailer test',
+  // text: 'Привет. Мы тестируем отправку писем!',
+  html: createTemplateEmail(verifyTokenEmail, name),
+
+}
+mailer(message)
+return res.status(HttpCode.OK).json({
+  status: "success",
+  code: HttpCode.OK,
+  data: {
+    message: "Verification successfull, email resubmitted",
+     },
+  
+});
+    }
+    return res.status(HttpCode.NOT_FOUND).json({
+      status: "Error",
+      code: HttpCode.NOT_FOUND,
+      data: {
+        message: "User is wrong",
+         },
+      
+    });
+
+
+  } catch (error) {
+    next(error)
+  }
+}
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -61,7 +136,7 @@ const login = async (req, res, next) => {
     const user = await serviceAuth.login(email, password);
     const token = user.token;
     const subscription = user.subscription;
-    if (token) {
+    if (token ) {
       return res.status(HttpCode.OK).json({
         status: "success",
         code: HttpCode.OK,
@@ -76,7 +151,7 @@ const login = async (req, res, next) => {
     }
     next({
       status: HttpCode.UNAUTHORIZED,
-      message: "Email or password is wrong",
+      message: "Email or password or verifyToken is wrong",
     });
   } catch (e) {
     next(e);
@@ -85,7 +160,7 @@ const login = async (req, res, next) => {
 
 const getCurrentUser = async (req, res, next) => {
   const { name, email, subscription } = req.user;
-  
+
   try {
     return res.status(HttpCode.OK).json({
       status: "success",
@@ -140,14 +215,11 @@ const logout = async (req, res, next) => {
 };
 
 const updateAvatar = async (req, res, next) => {
-
   try {
-    // console.log("2 type FOLDERS_AVATARS:", typeof FOLDERS_AVATARS);
     const { id } = req.user;
-    
-    // const avatarUrl = await saveAvatar(req);
+
     const { idCloudAvatar, avatarUrl } = await saveAvatarCloud(req);
-    
+
     await serviceUser.updateAvatar(id, avatarUrl, idCloudAvatar);
     return res.status(HttpCode.OK).json({
       status: "success",
@@ -179,7 +251,7 @@ const updateAvatar = async (req, res, next) => {
 //   );
 //   const oldAvatar = req.user.avatar;
 //   if(req.user.avatar.includes(`${FOLDERS_AVATARS}/`)){
-    
+
 //     await fs.unlink(path.join(process.cwd(), "public", oldAvatar))
 //   }
 
@@ -188,21 +260,25 @@ const updateAvatar = async (req, res, next) => {
 
 const saveAvatarCloud = async (req) => {
   const pathFile = req.file.path;
-    const { public_id: idCloudAvatar ,secure_url: avatarUrl} = await uploadCloudy(pathFile,{
-    public_id:req.user.idCloudAvatar?.replace("Avatars/",""),
-    folder:"Avatars",
-    transformation:{width: 250, height: 250, crop: "pad"}
-    
-  })
-  
+  const {
+    public_id: idCloudAvatar,
+    secure_url: avatarUrl,
+  } = await uploadCloudy(pathFile, {
+    public_id: req.user.idCloudAvatar?.replace("Avatars/", ""),
+    folder: "Avatars",
+    transformation: { width: 250, height: 250, crop: "pad" },
+  });
+
   await fs.unlink(pathFile);
 
-  return { idCloudAvatar, avatarUrl }
-}
+  return { idCloudAvatar, avatarUrl };
+};
 
 module.exports = {
   regisration,
-  login,
+  verifyToken,
+  verifyTokenEmail,
+  login,  
   getCurrentUser,
   userUpdateStatus,
   updateAvatar,

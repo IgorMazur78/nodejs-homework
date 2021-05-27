@@ -29,7 +29,7 @@ const newContact = {
 const User = {
     _id:"60910b18b6a01a1f28c6f939",
 subscription:"pro",
-token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MDkxMGIxOGI2YTAxYTFmMjhjNmY5MzkiLCJpYXQiOjE2MjA2NzgwNDUsImV4cCI6MTYyMDY4MTY0NX0.bQ-K9PllJKGf8JxBe4fedJYwqdWW3K8giOeE-V6tqDo",
+token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2MDkxMGIxOGI2YTAxYTFmMjhjNmY5MzkiLCJpYXQiOjE2MjExODYzNzAsImV4cCI6MTYyMTE4OTk3MH0.b4PXe54TPV9qVARM5AWEdI_eLR-WP2z0IXEQwfeJbbE",
 name:"Yura",
 email:"yura@gmail.com",
 password:"$2a$06$.GJx1iDUYD/dbn8IklzUDeYxd4CP4wO3XK/ylwLfAUshBqw6fKbJe",
